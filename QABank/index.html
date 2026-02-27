@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>QABank - Dashboard do Associado</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #0056b3; color: white; padding: 20px; border-radius: 8px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 20px; }
+        .actions { display: flex; gap: 10px; margin-top: 15px; }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; flex: 1; font-size: 16px; }
+        button { padding: 10px 15px; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
+        button:hover { opacity: 0.8; }
+        .btn-deposito { background-color: #28a745; }
+        .btn-saque { background-color: #dc3545; }
+        .btn-pix { background-color: #17a2b8; }
+        .extrato-list { list-style: none; padding: 0; }
+        .extrato-list li { padding: 10px; border-bottom: 1px solid #eee; }
+        .mensagem { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>QABank</h2>
+            <span>Olá, <strong id="nome-usuario">João</strong></span>
+        </div>
+
+        <div class="card">
+            <h3>Saldo Disponível: R$ <span id="saldo-valor">500.00</span></h3>
+            
+            <div class="actions">
+                <input type="number" id="valor-operacao" placeholder="Digite o valor (R$)">
+                <button class="btn-deposito" id="btn-depositar" onclick="realizarOperacao('deposito')">Depositar</button>
+                <button class="btn-saque" id="btn-sacar" onclick="realizarOperacao('saque')">Sacar</button>
+                <button class="btn-pix" id="btn-pix" onclick="realizarOperacao('pix')">Fazer PIX</button>
+            </div>
+            <div id="mensagem-feedback" class="mensagem"></div>
+        </div>
+
+        <div class="card">
+            <h3>Extrato Recente</h3>
+            <ul id="lista-extrato" class="extrato-list">
+                <li>Conta aberta com saldo de: R$ 500.00</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Lógica do Banco no Navegador (Simulando o Backend)
+        let saldo = 500.00;
+        
+        function atualizarTela(msg, cor) {
+            document.getElementById('saldo-valor').innerText = saldo.toFixed(2);
+            const feedback = document.getElementById('mensagem-feedback');
+            feedback.innerText = msg;
+            feedback.style.color = cor;
+        }
+
+        function adicionarExtrato(texto) {
+            const lista = document.getElementById('lista-extrato');
+            const item = document.createElement('li');
+            item.innerText = texto;
+            lista.appendChild(item);
+        }
+
+        function realizarOperacao(tipo) {
+            const input = document.getElementById('valor-operacao');
+            const valor = parseFloat(input.value);
+
+            if (isNaN(valor) || valor <= 0) {
+                atualizarTela(" Digite um valor válido e positivo!", "red");
+                return;
+            }
+
+            if (tipo === 'deposito') {
+                saldo += valor;
+                atualizarTela("Depósito de R$ " + valor.toFixed(2) + " realizado!", "green");
+                adicionarExtrato("Depósito: + R$ " + valor.toFixed(2));
+            } else if (tipo === 'saque' || tipo === 'pix') {
+                if (valor > saldo) {
+                    atualizarTela(" Saldo insuficiente!", "red");
+                    return;
+                }
+                saldo -= valor;
+                const acao = tipo === 'saque' ? "Saque" : "PIX enviado";
+                atualizarTela(acao + " de R$ " + valor.toFixed(2) + " realizado!", "green");
+                adicionarExtrato(acao + ": - R$ " + valor.toFixed(2));
+            }
+            input.value = ''; // Limpa o campo após a operação
+        }
+    </script>
+</body>
+</html>
