@@ -12,7 +12,7 @@ public class ContaTest {
         conta.depositar(50.0);
 
         Assertions.assertEquals(150.0, conta.saldo);
-        Assertions.assertTrue(conta.extrato.get(1).contains("Depósito"));
+        Assertions.assertTrue(conta.extrato.get(1).contains("R$ 50.0"));
     }
 
     @Test
